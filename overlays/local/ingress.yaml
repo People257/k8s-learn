@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: my-web-ingress
+  annotations:
+    # 🔐 核心：告诉 cert-manager 自动颁发证书
+    cert-manager.io/cluster-issuer: "selfsigned-issuer"
+spec:
+  ingressClassName: traefik
+  tls:
+    - hosts:
+        - local.127.0.0.1.nip.io
+      secretName: my-web-tls
+  rules:
+    - host: local.127.0.0.1.nip.io
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: my-web
+                port:
+                  number: 80
