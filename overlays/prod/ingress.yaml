@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: my-web-ingress
+  annotations:
+    cert-manager.io/cluster-issuer: "selfsigned-issuer"
+spec:
+  ingressClassName: traefik
+  tls:
+    - hosts:
+        - prod.127.0.0.1.nip.io  # 🔥 修改域名
+      secretName: prod-my-web-tls # 证书名字最好也改一下，防止冲突
+  rules:
+    - host: prod.127.0.0.1.nip.io # 🔥 修改域名
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: my-web
+                port:
+                  number: 80
